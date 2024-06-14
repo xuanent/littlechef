@@ -1,6 +1,8 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
+// import { useSearchParams } from "react-router-dom";
 import * as React from "react";
 import { Ingredient, columns } from "./columns";
 import { DataTable } from "./data-table";
@@ -65,10 +67,25 @@ const formSchema = z.object({
     }),
 });
 
+function GetName() {
+  const searchParams = useSearchParams();
+  const name = searchParams?.get("name");
+  return (
+    <div>
+      {name ? (
+        <div className="text-5xl py-8">
+          {" "}
+          hi {name}! what are we working with today?{" "}
+        </div>
+      ) : (
+        <div className="text-5xl py-8">hi! what are we working with today?</div>
+      )}
+    </div>
+  );
+}
+
 const LetsCook: React.FC = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const name = searchParams.get("name");
   const [rowSelection, setRowSelection] = React.useState<
     Record<string, boolean>
   >({});
@@ -130,16 +147,9 @@ const LetsCook: React.FC = () => {
   return (
     <div className={"container"}>
       <header className={"header"}>
-        <div>
-          {name ? (
-            <div className="hello">
-              {" "}
-              hi {name}! what are we working with today?{" "}
-            </div>
-          ) : (
-            <div className="hello">hi! what are we working with today?</div>
-          )}
-        </div>
+        <Suspense>
+          <GetName />
+        </Suspense>
       </header>
 
       <div className={"addNew"}>
@@ -294,11 +304,6 @@ const LetsCook: React.FC = () => {
           border-radius: 9999px;
           min-height: 70vh;
           min-width: 80vh;
-        }
-
-        .hello {
-          font-size: 5vh;
-          padding: 2vh;
         }
 
         .ingredientsDisplay {
