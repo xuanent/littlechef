@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
@@ -51,12 +51,21 @@ const Home: React.FC = () => {
         <Dialog>
           <DialogTrigger asChild>
             <Button className="mr-4 bg-orange-100 text-black hover:bg-orange-300">
-              Yes
+              yea
             </Button>
           </DialogTrigger>
           <DialogContent>
             <form onSubmit={handleSubmit}>
               <DialogHeader>
+                <div className="flex justify-center items-center h-full">
+                  <Image
+                    src="/images/gif.jpg"
+                    priority
+                    width={150}
+                    height={150}
+                    alt=""
+                  />
+                </div>
                 <DialogTitle>yay! whats is your name?</DialogTitle>
               </DialogHeader>
               <div className="grid gap-4 py-4">
@@ -93,7 +102,7 @@ const Home: React.FC = () => {
             });
           }}
         >
-          No
+          nah
         </Button>
       </div>
 

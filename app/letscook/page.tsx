@@ -2,7 +2,6 @@
 
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-// import { useSearchParams } from "react-router-dom";
 import * as React from "react";
 import { Ingredient, columns } from "./columns";
 import { DataTable } from "./data-table";
@@ -14,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
-import { Label } from "@/components/ui/label";
 
 import {
   Dialog,
@@ -44,8 +42,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { table } from "console";
-import { getRandomValues } from "crypto";
 
 const formSchema = z.object({
   name: z
@@ -57,14 +53,24 @@ const formSchema = z.object({
     }),
   dateBought: z.date(),
   servings: z
-    .string()
-    .regex(/^\d*\.?\d{0,2}$/, {
-      message: "Please enter a valid number with up to 2 decimal places.",
+    .number({
+      required_error: "Please enter a number for the item.",
     })
-    .transform((val) => parseFloat(val))
-    .refine((val) => val > 0, {
+    .multipleOf(0.01, {
+      message: "Please only enter up to 2 decimal places.",
+    })
+    .positive({
       message: "Servings must be greater than 0.",
     }),
+  // servings: z
+  //   .string()
+  //   .regex(/^\d*\.?\d{0,2}$/, {
+  //     message: "Please enter a valid number with up to 2 decimal places.",
+  //   })
+  //   .transform((val) => parseFloat(val))
+  //   .refine((val) => val > 0, {
+  //     message: "Servings must be greater than 0.",
+  //   }),
 });
 
 function GetName() {
@@ -85,23 +91,23 @@ function GetName() {
 }
 
 const LetsCook: React.FC = () => {
-  const router = useRouter();
   const [rowSelection, setRowSelection] = React.useState<
     Record<string, boolean>
   >({});
   const [selectedNames, setSelectedNames] = React.useState<string[]>([]);
   const dialogRef = React.useRef<HTMLButtonElement>(null);
+  const router = useRouter();
 
   const [allIngredients, setAllIngredients] = React.useState<Ingredient[]>([
-    { name: "Napa Cabbage", dateBought: new Date(2024, 4, 7), servings: 4 },
+    { name: "napa cabbage", dateBought: new Date(2024, 4, 7), servings: 4 },
     {
-      name: "Enoki mushrooms",
+      name: "enoki mushrooms",
       dateBought: new Date(2024, 4, 7),
       servings: 4,
     },
-    { name: "Strawberries", dateBought: new Date(2024, 4, 7), servings: 4 },
-    { name: "Minced pork", dateBought: new Date(2024, 4, 7), servings: 4 },
-    { name: "Shrimp", dateBought: new Date(2024, 4, 7), servings: 5 },
+    { name: "strawberries", dateBought: new Date(2024, 4, 7), servings: 4 },
+    { name: "minced pork", dateBought: new Date(2024, 4, 7), servings: 4 },
+    { name: "shrimp", dateBought: new Date(2024, 4, 7), servings: 5 },
   ]);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -109,39 +115,55 @@ const LetsCook: React.FC = () => {
     defaultValues: {
       name: "",
       // dateBought: new Date(Date.now()).toLocaleDateString("en-US"),
-      servings: 0,
+      servings: undefined,
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
     const newIngredient: Ingredient = {
       name: values.name,
       servings: values.servings,
       dateBought: values.dateBought,
     };
-    setAllIngredients([...allIngredients, newIngredient]);
+    setAllIngredients([newIngredient, ...allIngredients]);
     form.reset();
   }
 
   const handleIngSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    console.log(rowSelection);
     const selectedRows = Object.keys(rowSelection)
       .filter((key) => rowSelection[key])
       .map((key) => allIngredients[parseInt(key)]);
     const names = selectedRows.map((row) => row.name);
     setSelectedNames(names);
-    console.log(names);
 
     if (dialogRef.current) {
       dialogRef.current.click();
     }
   };
 
-  const recipeGen = (event: React.FormEvent) => {
+  const handleIngDelete = (event: React.FormEvent) => {
     event.preventDefault();
-    router.push(`/somerecipes?name=${selectedNames}`);
+    const updatedIngredients = allIngredients.filter((_, index) => {
+      return !rowSelection[index];
+    });
+    setAllIngredients(updatedIngredients);
+    setRowSelection({});
+  };
+
+  // const recipeGen = (event: React.FormEvent) => {
+  //   event.preventDefault();
+  //   router.push(`/somerecipes?ingredients=${selectedNames}`);
+  // };
+
+  const GenerateRecipeHandler = (event: React.FormEvent) => {
+    event.preventDefault();
+    const selectedIngredientNames = selectedNames;
+    const queryParams = new URLSearchParams({
+      ingredientNames: selectedIngredientNames.join(","),
+    });
+    const url = `/somerecipes?${queryParams.toString()}`;
+    router.push(url);
   };
 
   return (
@@ -163,9 +185,11 @@ const LetsCook: React.FC = () => {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>add more items</FormLabel>
+                  <FormDescription className="font-bold text-black">
+                    add more ingredients!
+                  </FormDescription>
                   <FormControl>
-                    <Input placeholder="name" {...field} />
+                    <Input placeholder="ingredient" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -217,21 +241,40 @@ const LetsCook: React.FC = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="number of servings" {...field} />
+                    <Input
+                      placeholder="number of servings"
+                      value={field.value === undefined ? "" : field.value}
+                      onChange={(e) => {
+                        const inputValue = e.target.value;
+                        const regex = /^\d*\.?\d{0,2}$/;
+                        if (regex.test(inputValue) || inputValue === "") {
+                          const numberValue =
+                            inputValue === ""
+                              ? undefined
+                              : parseFloat(inputValue);
+                          field.onChange(numberValue);
+                        }
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit" style={{ marginTop: "2vh" }}>
-              Submit
-            </Button>
+            <div className="flex justify-end align-end mt-0">
+              <Button
+                className="bg-orange-100 hover:bg-orange-50 border text-black"
+                type="submit"
+              >
+                add
+              </Button>
+            </div>
           </form>
         </Form>
       </div>
 
       <div className={"ingredientsDisplay"}>
-        <ScrollArea className="h-[30vh] rounded-md p-4 w-[90vh]">
+        <ScrollArea className="h-[30vh] rounded-md p-4 max-w-[105vh]">
           <div className="container mx-auto py-10 w-[70vh] space-y-8">
             <DataTable
               columns={columns}
@@ -249,31 +292,60 @@ const LetsCook: React.FC = () => {
               </button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>let us chef it up with these picks</DialogTitle>
-                <DialogDescription>
-                  <ul
-                    style={{
-                      listStyleType: "disc",
-                      paddingLeft: "20px",
-                      marginTop: "10px",
-                    }}
-                  >
-                    {selectedNames.map((name, index) => (
-                      <li key={index}>{name}</li>
-                    ))}
-                  </ul>
-                </DialogDescription>
-              </DialogHeader>
-              <DialogFooter className="sm:justify-start">
-                <DialogClose asChild>
-                  <Button type="submit" onClick={recipeGen}>
-                    yes im sure
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
+              {selectedNames.length > 0 ? (
+                <div>
+                  <DialogHeader>
+                    <DialogTitle>lets chef it up with these picks</DialogTitle>
+                    <DialogDescription>
+                      <ul
+                        style={{
+                          listStyleType: "disc",
+                          paddingLeft: "20px",
+                          marginTop: "10px",
+                        }}
+                      >
+                        {selectedNames.map((name, index) => (
+                          <li key={index}>{name}</li>
+                        ))}
+                      </ul>
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter className="sm:justify-start">
+                    <DialogClose asChild>
+                      <Button
+                        className="mt-4"
+                        type="submit"
+                        onClick={GenerateRecipeHandler}
+                      >
+                        yes im sure
+                      </Button>
+                    </DialogClose>
+                  </DialogFooter>
+                </div>
+              ) : (
+                <>
+                  <DialogHeader>
+                    <DialogTitle>hurry up decide</DialogTitle>
+                    <DialogDescription>dont be indecisive!!</DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter className="sm:justify-start">
+                    <DialogClose asChild>
+                      <div className="flex justify-end">
+                        <Button>go back and choose</Button>
+                      </div>
+                    </DialogClose>
+                  </DialogFooter>
+                </>
+              )}
             </DialogContent>
           </Dialog>
+          <Button
+            className="bg-orange-500 w-[100px] mr-4"
+            type="submit"
+            onClick={handleIngDelete}
+          >
+            delete
+          </Button>
           <Button
             className="bg-orange-500 w-[100px]"
             type="submit"

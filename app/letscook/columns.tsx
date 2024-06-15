@@ -34,11 +34,11 @@ export const columns: ColumnDef<Ingredient>[] = [
   },
   {
     accessorKey: "name",
-    header: "Name",
+    header: "name",
   },
   {
     accessorKey: "dateBought",
-    header: "Date Bought",
+    header: "date bought",
     cell: ({ row }) => {
       const dateObject = row.getValue("dateBought");
       if (dateObject instanceof Date) {
@@ -53,6 +53,6 @@ export const columns: ColumnDef<Ingredient>[] = [
   },
   {
     accessorKey: "servings",
-    header: "Servings",
+    header: "servings",
   },
 ];

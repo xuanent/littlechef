@@ -46,9 +46,9 @@ export function DataTable<TData, TValue>({
   return (
     <div className="rounded-md border">
       <Table>
-        <TableHeader className="sticky top-0 bg-secondary">
+        <TableHeader className="sticky top-0 bg-orange-300">
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
+            <TableRow key={headerGroup.id} className="sticky top-0">
               {headerGroup.headers.map((header) => {
                 return (
                   <TableHead key={header.id}>
@@ -68,6 +68,7 @@ export function DataTable<TData, TValue>({
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
+                className="hover:bg-orange-100"
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
               >
@@ -81,7 +82,7 @@ export function DataTable<TData, TValue>({
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
+                give me something to cook with
               </TableCell>
             </TableRow>
           )}
