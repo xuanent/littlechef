@@ -59,6 +59,9 @@ const formSchema = z.object({
     .multipleOf(0.01, {
       message: "Please only enter up to 2 decimal places.",
     })
+    .max(10, {
+      message: "Servings must be less than 10.",
+    })
     .positive({
       message: "Servings must be greater than 0.",
     }),
@@ -103,10 +106,11 @@ const LetsCook: React.FC = () => {
     {
       name: "enoki mushrooms",
       dateBought: new Date(2024, 4, 7),
-      servings: 4,
+      servings: 1,
     },
     { name: "strawberries", dateBought: new Date(2024, 4, 7), servings: 4 },
-    { name: "minced pork", dateBought: new Date(2024, 4, 7), servings: 4 },
+    { name: "egg", dateBought: new Date(2024, 4, 10), servings: 6 },
+    { name: "minced pork", dateBought: new Date(2024, 4, 7), servings: 2 },
     { name: "shrimp", dateBought: new Date(2024, 4, 7), servings: 5 },
   ]);
 
@@ -274,6 +278,10 @@ const LetsCook: React.FC = () => {
       </div>
 
       <div className={"ingredientsDisplay"}>
+        <p>
+          here are just some ingredients i always have in my fridge but feel
+          free to add more!
+        </p>
         <ScrollArea className="h-[30vh] rounded-md p-4 max-w-[105vh]">
           <div className="container mx-auto py-10 w-[70vh] space-y-8">
             <DataTable
@@ -310,7 +318,7 @@ const LetsCook: React.FC = () => {
                       </ul>
                     </DialogDescription>
                   </DialogHeader>
-                  <DialogFooter className="sm:justify-start">
+                  <DialogFooter className="sm:justify-end">
                     <DialogClose asChild>
                       <Button
                         className="mt-4"
@@ -325,14 +333,16 @@ const LetsCook: React.FC = () => {
               ) : (
                 <>
                   <DialogHeader>
-                    <DialogTitle>hurry up decide</DialogTitle>
-                    <DialogDescription>dont be indecisive!!</DialogDescription>
+                    <DialogTitle className="mb-2">
+                      hurry up and decide
+                    </DialogTitle>
+                    <DialogDescription className="mt-24">
+                      dont be indecisive!!
+                    </DialogDescription>
                   </DialogHeader>
-                  <DialogFooter className="sm:justify-start">
+                  <DialogFooter className="sm:justify-end">
                     <DialogClose asChild>
-                      <div className="flex justify-end">
-                        <Button>go back and choose</Button>
-                      </div>
+                      <Button>go back and choose</Button>
                     </DialogClose>
                   </DialogFooter>
                 </>

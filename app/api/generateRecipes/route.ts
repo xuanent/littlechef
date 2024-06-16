@@ -10,13 +10,16 @@ const openai = new OpenAI({
 });
 
 export async function POST(req: Request) {
-  const ingredients = await req.json();
-  console.log('Received ingredientNames:', ingredients);
+  const data = await req.json();
+  console.log('Received data:', data);
+  console.log('Received ingredientNames:', data.ingredientNames);
 
-
-  if (!ingredients || ingredients.length === 0) {
+  if (!data || data.length === 0) {
     return NextResponse.json({ error: 'No ingredients provided' }, { status: 400 });
   }
+  
+  const ingredientsString = data.ingredientNames.join(', ');
+  console.log('Formatted ingredients:', ingredientsString);
 
   try {
     const completion = await openai.chat.completions.create({
@@ -28,17 +31,16 @@ export async function POST(req: Request) {
         },
         {
           role: 'user',
-          content: `I have the following ingredients: ${ingredients}. Can you suggest 5 meal ideas?`,
+          content: `I have the following ingredients: ${ingredientsString}. Can you suggest 5 meal ideas with 3-4 lines of how to make it? Give me the information directly without any introductory sentences but sound friendly. Each meal idea should be separated by a new line but each meal idea should be given in a continuous line with this format "[index]. [name]: [description]".`,
         },
       ],
-      response_format: { type: "json_object" },
-
     });
 
     console.log(completion.choices[0].message.content);
 
-    // const mealIdeas = response.choices[0].message?.content;
-    // return NextResponse.json({ mealIdeas });
+    const mealIdeas = completion.choices[0].message.content;
+    return NextResponse.json({ mealIdeas });
+    
   } catch (error) {
     console.error('Error calling OpenAI API:', error);
     return NextResponse.json({ error: 'Failed to generate meal ideas' }, { status: 500 });
