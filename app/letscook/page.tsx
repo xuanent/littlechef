@@ -282,8 +282,11 @@ const LetsCook: React.FC = () => {
           here are just some ingredients i always have in my fridge but feel
           free to add more!
         </p>
-        <ScrollArea className="h-[30vh] rounded-md p-4 max-w-full">
-          <div className="container mx-auto py-10 w-full space-y-8">
+        <ScrollArea className="h-[30vh] rounded-md overflow-scroll p-4 max-w-full [&>div]:!overflow-auto">
+          <div
+            // className="container mx-auto py-10 w-x space-y-8"
+            className="min-w-max overflow-scroll w-full"
+          >
             <DataTable
               columns={columns}
               data={allIngredients}

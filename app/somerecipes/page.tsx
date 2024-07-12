@@ -262,8 +262,8 @@ const Generate: React.FC = () => {
         }
 
         .ihatetheserecipes {
-          width: 90%;
-          margin-top: 5%;
+          width: 100%;
+          margin-top: 2vw;
           display: flex;
           justify-content: flex-end;
         }
