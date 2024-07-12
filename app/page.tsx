@@ -36,7 +36,7 @@ const Home: React.FC = () => {
   return (
     <div className={"container"}>
       <header className={"header"}>
-        <div style={{ width: "100%" }}>
+        <div style={{ width: "90%" }}>
           <Image
             src="/images/banner.jpg"
             priority
@@ -108,7 +108,7 @@ const Home: React.FC = () => {
 
       <style jsx>{`
         .container {
-          max-width: 100vh;
+          position: relative;
           padding: 0 1rem;
           justify-content: center;
           align-items: flex-start;
@@ -116,9 +116,10 @@ const Home: React.FC = () => {
         }
 
         .header {
+          position: relative;
           padding: 2vh;
-          min-width: 100vh;
-          min-height: 50vh;
+          width: 100%;
+          height: 100%;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -133,10 +134,12 @@ const Home: React.FC = () => {
         .hello {
           font-size: 5vh;
           padding: 2vh;
+          text-align: center;
         }
 
         .answer {
-          min-width: 100vh;
+          position: relative;
+          width: 100%;
           display: flex;
           flex-direction: row;
           justify-content: center;

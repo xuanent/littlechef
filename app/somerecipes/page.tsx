@@ -138,25 +138,24 @@ const Generate: React.FC = () => {
         <div className="hello">you chose {joinWithAnd(ingredientNames)}!</div>
       </header>
       <div className="recipe">
-        <div className="flex flex-col items-center justify-center my-5">
-          <Image
-            src="/images/right.jpg"
-            priority
-            width={400}
-            height={600}
-            alt=""
-          />
-          <Image
-            src="/images/right.jpg"
-            priority
-            width={400}
-            height={600}
-            alt=""
-          />
+        <div
+          className="flex flex-col items-center justify-start w-1/3"
+          style={{ maxHeight: "100%", overflow: "auto" }}
+        >
+          <div
+            className="image-container"
+            style={{
+              backgroundImage: 'url("/images/right.jpg")',
+              backgroundRepeat: "repeat-y",
+              backgroundSize: "100%",
+              minHeight: "100%",
+              width: "100%",
+            }}
+          ></div>
         </div>
         <div className="actualRecipe">
           {loading && (
-            <div className="flex flex-col items-center justify-center h-[80vh]">
+            <div className="flex flex-col items-center justify-start h-3/4">
               <p>gimme a bit... </p>
               <Image
                 src={loadingGif}
@@ -188,21 +187,20 @@ const Generate: React.FC = () => {
             </div>
           )}
         </div>
-        <div className="flex flex-col items-center justify-center my-5">
-          <Image
-            src="/images/right.jpg"
-            priority
-            width={400}
-            height={600}
-            alt=""
-          />
-          <Image
-            src="/images/right.jpg"
-            priority
-            width={400}
-            height={600}
-            alt=""
-          />
+        <div
+          className="flex flex-col items-center justify-start w-1/3"
+          style={{ maxHeight: "100%", overflow: "auto" }}
+        >
+          <div
+            className="image-container"
+            style={{
+              backgroundImage: 'url("/images/right.jpg")',
+              backgroundRepeat: "repeat-y",
+              backgroundSize: "100%",
+              minHeight: "100%",
+              width: "100%",
+            }}
+          ></div>
         </div>
       </div>
       {!loading && (
@@ -218,21 +216,23 @@ const Generate: React.FC = () => {
 
       <style jsx>{`
         .container {
-          max-width: 100%;
+          width: 100%;
           padding: 0 1rem;
           display: flex;
           justify-content: center;
           align-items: center;
           flex-direction: column;
           margin-bottom: 4vh;
+          position: relative;
         }
 
         .header {
           padding: 2vh;
-          min-width: 100vh;
+          width: 100%;
           display: flex;
           flex-direction: column;
           align-items: center;
+          position: relative;
         }
 
         .border {
@@ -244,22 +244,26 @@ const Generate: React.FC = () => {
         .hello {
           font-size: 2vh;
           padding: 0.5vh;
+          text-align: center;
         }
 
         .recipe {
-          width: 130vh;
+          width: 100%;
           display: flex;
           flex-direction: row;
           justify-content: center;
+          relative: center;
         }
 
         .actualRecipe {
           width: 100%;
-          padding: 2rem;
+          padding-left: 5%;
+          padding-right: 5%;
         }
 
         .ihatetheserecipes {
-          width: 130vh;
+          width: 90%;
+          margin-top: 5%;
           display: flex;
           justify-content: flex-end;
         }

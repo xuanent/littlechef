@@ -182,7 +182,7 @@ const LetsCook: React.FC = () => {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-2 w-[50vh]"
+            className="space-y-2 w-8/12 relative"
           >
             <FormField
               control={form.control}
@@ -210,7 +210,7 @@ const LetsCook: React.FC = () => {
                         <Button
                           variant={"outline"}
                           className={cn(
-                            "w-[50vh] pl-3 text-left font-normal",
+                            "w-6/12 pl-3 text-left font-normal w-full",
                             !field.value && "text-muted-foreground"
                           )}
                         >
@@ -278,12 +278,12 @@ const LetsCook: React.FC = () => {
       </div>
 
       <div className={"ingredientsDisplay"}>
-        <p>
+        <p className="text-center">
           here are just some ingredients i always have in my fridge but feel
           free to add more!
         </p>
-        <ScrollArea className="h-[30vh] rounded-md p-4 max-w-[105vh]">
-          <div className="container mx-auto py-10 w-[70vh] space-y-8">
+        <ScrollArea className="h-[30vh] rounded-md p-4 max-w-full">
+          <div className="container mx-auto py-10 w-full space-y-8">
             <DataTable
               columns={columns}
               data={allIngredients}
@@ -368,18 +368,22 @@ const LetsCook: React.FC = () => {
 
       <style jsx>{`
         .container {
-          min-width: 100vh;
+          width: 100%;
           padding: 0 1rem;
           justify-content: center;
           flex-direction: column;
+          position: relative;
         }
 
         .header {
           padding: 2vh;
-          min-width: 100vh;
+          position: relative;
+          width: 100%;
           display: flex;
           flex-direction: column;
           align-items: center;
+          text-align: center;
+          position: relative;
         }
 
         .border {
@@ -390,16 +394,18 @@ const LetsCook: React.FC = () => {
 
         .ingredientsDisplay {
           padding: 2vh;
-          min-width: 100vh;
-          min-height: 35vh;
+          min-width: 100%;
+          min-height: 35%;
           display: flex;
           flex-direction: column;
           justify-content: center;
           align-items: center;
+          position: relative;
         }
         .addNew {
-          padding: 2vh;
-          min-width: 70vh;
+          padding: 2%;
+          width: 100%;
+          position: relative;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -407,7 +413,7 @@ const LetsCook: React.FC = () => {
 
         .ready {
           padding: 2vh;
-          width: 90vh;
+          width: 70%;
           display: flex;
           flex-direction: row;
           justify-content: flex-end;
