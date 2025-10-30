@@ -202,6 +202,7 @@ const LetsCook: React.FC = () => {
             <FormField
               control={form.control}
               name="dateBought"
+              defaultValue={new Date()}
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <Popover>
@@ -242,6 +243,7 @@ const LetsCook: React.FC = () => {
             <FormField
               control={form.control}
               name="servings"
+              defaultValue={2}
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
